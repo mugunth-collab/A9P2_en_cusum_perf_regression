@@ -1,0 +1,5 @@
+,f1,precision,recall,far,pr_auc,roc_auc
+Fixed thresholds,0.6106,0.5352,0.7105,0.0584,0.5237,0.9168
+Percent-delta rule,0.5457,0.5184,0.576,0.0507,0.474,0.8916
+Random forest,0.8465,0.901,0.7982,0.0083,0.9046,0.9762
+EN+CUSUM (proposed),0.8178,0.8288,0.807,0.0158,0.9144,0.9839

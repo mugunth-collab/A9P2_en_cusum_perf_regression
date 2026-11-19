@@ -1,0 +1,53 @@
+digraph G {
+  graph [rankdir=TB, fontname="Helvetica", fontsize=13, nodesep=0.12, ranksep=0.18, newrank=true, margin=0.02];
+  node  [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=13, fillcolor="#eeeeee", color="#777777", penwidth=1.0, margin="0.06,0.03"];
+  edge  [color="#555555", arrowsize=0.6, penwidth=1.0, fontname="Helvetica", fontsize=12];
+
+  subgraph cluster_data {
+    label="1  CI data layer"; style="rounded,filled"; fillcolor="#f4f4f4"; color="#bbbbbb";
+    commit [label="Commit diff\n(LOC, layers, deps)"];
+    farm   [label="Device-farm run\n7 devices x 6 journeys"];
+    { rank=same; commit; farm; }
+  }
+
+  subgraph cluster_prep {
+    label="2  Stream pre-processing"; style="rounded,filled"; fillcolor="#f1f5fa"; color="#b8c7d9";
+    imp  [label="Impute; log\nratio r_t, Eq. (1)"];
+    rz   [label="Robust z, W = 40\nclip 8, Eq. (2)"];
+    { rank=same; imp; rz; }
+  }
+
+  subgraph cluster_prop {
+    label="3  Proposed EN + CUSUM gate"; style="rounded,filled"; fillcolor="#fbeeee"; color="#d9a3a3"; fontcolor="#7a1f1f";
+    node [fillcolor="#f6d5d2", color="#c0392b"];
+    cus  [label="CUSUM S_t\nEq. (3)"];
+    feat [label="x_t: code, code x\njourney, z, S_t"];
+    fista[label="FISTA prox step\nEqs. (5)-(6)"];
+    conv [shape=diamond, label="conv.?", margin="0.01,0.01"];
+    prob [label="p_t = sigma(b + w'x_t)\nEq. (4)"];
+    g1   [shape=diamond, label="p_t >=\ntau_hi?", margin="0.01,0.01"];
+    g2   [shape=diamond, label="p_t >= tau_lo\n& S_t >= gamma?", margin="0.0,0.0"];
+    { rank=same; cus; feat; }
+    { rank=same; fista; conv; }
+    { rank=same; prob; g1; }
+  }
+
+  subgraph cluster_out {
+    label="4  CI decision, evaluation"; style="rounded,filled"; fillcolor="#f4f4f4"; color="#bbbbbb";
+    alarm [label="ALARM: block\nmerge, ticket", fillcolor="#c0392b", fontcolor="white", color="#922b21"];
+    pass  [label="Pass to\nrelease"];
+    evalb [label="vs fixed, %-delta, RF\nCV + 2026 test, Eq. (8)"];
+    { rank=same; alarm; pass; }
+  }
+
+  commit -> imp; farm -> rz; imp -> rz;
+  rz -> cus; rz -> feat; cus -> feat;
+  feat -> fista; fista -> conv;
+  conv -> fista [label="no", style=dashed, color="#c0392b", fontcolor="#c0392b", constraint=false];
+  conv -> prob [label="yes"];
+  prob -> g1;
+  g1 -> alarm [label="yes"]; g1 -> g2 [label="no"];
+  g2 -> alarm [label="yes"]; g2 -> pass [label="no"];
+  cus -> g2 [style=dashed, color="#2c7fb8", label="S_t", fontcolor="#2c7fb8", constraint=false];
+  alarm -> evalb; pass -> evalb;
+}

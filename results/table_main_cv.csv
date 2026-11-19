@@ -1,0 +1,5 @@
+method,pr_auc_mean,pr_auc_std,roc_auc_mean,roc_auc_std,f1_mean,f1_std,precision_mean,precision_std,recall_mean,recall_std,far_mean,far_std
+Fixed thresholds,0.5457,0.0377,0.9153,0.0132,0.6282,0.0237,0.5844,0.0319,0.6796,0.0151,0.048,0.0055
+Percent-delta rule,0.4854,0.0294,0.8873,0.012,0.5475,0.0133,0.5378,0.0274,0.5611,0.0432,0.0482,0.0081
+Random forest,0.8999,0.0156,0.9792,0.006,0.8199,0.0236,0.8623,0.0277,0.7815,0.0211,0.0124,0.0026
+EN+CUSUM (proposed),0.9096,0.0066,0.9844,0.0026,0.8201,0.0175,0.8517,0.0436,0.7926,0.028,0.0139,0.0052

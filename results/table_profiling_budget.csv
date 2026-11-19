@@ -1,0 +1,4 @@
+ranking,recall_at_20pct_farm_time,recall_at_30pct_farm_time,recall_at_50pct_farm_time
+EN code-only risk,0.8041,0.9064,0.9708
+RF code-only risk,0.7865,0.8772,0.9649
+Random order,0.2105,0.3012,0.4942
